@@ -1,13 +1,14 @@
-import { isObject } from "../uitls/index";
+import { isObject, def } from "../uitls/index";
 import { arrayMethods } from "./array.js";
 
 class Observe {
   constructor(value) {
-    Object.defineProperty(value, "__ob__", {
-      enumerable: false, // 不可枚举
-      configurable: false, // 不可修改
-      value: this //  赋值
-    })
+    // Object.defineProperty(value, "__ob__", {
+    //   enumerable: false, // 不可枚举
+    //   configurable: false, // 不可修改
+    //   value: this //  赋值
+    // })
+    def(value, "__ob__", this);
     // vue如果数据测层次过多，需要递归去解析对象中的属性，一次增加set和get方法
     if (Array.isArray(value)) {
       // value.__ob__ = this; // 在每一个监控的对象上面绑定一个实例属性
