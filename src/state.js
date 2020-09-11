@@ -25,7 +25,7 @@ function initData(vm) {
   let data = vm.$options.data;
   // data.call(vm) 考虑到data() {return {age: this.age}}
   data = typeof data === 'function' ? data.call(vm) : data;
-  // 让用户方便拿取数据
+  // 让用户方便拿取数据,把_data挂载上去
   vm._data = data;
   // 对象劫持（用户改变数据我希望得到通知， 刷新页面数据）
   // Object.definePrototype() 给属性增加get和set方法

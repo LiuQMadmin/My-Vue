@@ -1,12 +1,20 @@
-import { isObject } from "../uitls/index"
-
+import { isObject } from "../uitls/index";
+import { arrayMethods } from "./array.js";
 
 class Observe {
   constructor(value) {
+    Object.defineProperty(value, "__ob__", {
+      enumerable: false, // 不可枚举
+      configurable: false, // 不可修改
+      value: this //  赋值
+    })
     // vue如果数据测层次过多，需要递归去解析对象中的属性，一次增加set和get方法
     if (Array.isArray(value)) {
-      // 如果是数组的话，并不会对索引进行观this.observeArray(value);测，会导致性能过差
+      // value.__ob__ = this; // 在每一个监控的对象上面绑定一个实例属性
+      // 如果是数组的话，并不会对索引进行观测，this.observeArray(value);会导致性能过差
       // 如果数组里面是对象，我再监控
+      // 前端开发中很少去操作索引，push、shift、unshift || value.__proto__ => Array.prototype
+      value.__proto__ = arrayMethods;
       this.observeArray(value);
     } else {
       this.walk(value);
@@ -18,9 +26,10 @@ class Observe {
       defineReactive(data, key, value); // 定义相应式数据
     })
   };
+  //监控数组里面的每一项
   observeArray(data) {
     data.forEach((item) => {
-      observe(item)
+      observe(item);
     })
   };
 }
