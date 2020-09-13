@@ -4,23 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <style>
+      .helloworld {
+        background: red;
+      }
+    </style>
   </head>
   <body>
-    <button onClick="tap()">双击</button>
+    <div id="app">
+      <p v-bind:class="className">{{name}}</p>
+      <p></p>
+      <span>{{age}}</span>
+      <button onClick="aa()"></button>
+    </div>
     <script src="/dist/umd/vue.js"></script>
     <script>
       let vm = new Vue({
         el: "#app",
         data() {
           return {
-            name: [{ a: 1 }, { b: 2 }]
+            name: "lqm",
+            age: 23,
+            className: "helloworld",
           };
-        }
+        },
       });
-      console.log(vm._data.name);
-      function tap() {
-        vm._data.name.push([10]);
-        vm._data.name[2][0] = 100;
+      function aa() {
+        vm.$data.className = "hello";
+        console.log(vm.$data);
       }
     </script>
   </body>

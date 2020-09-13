@@ -22,7 +22,7 @@ class Observe {
     }
   };
   walk(data) {
-    let keys = Object.entries(data); // 获取data中所有的kay
+    let keys = Object.entries(data); // 获取data中所有的key
     keys.forEach(([key, value]) => {
       defineReactive(data, key, value); // 定义相应式数据
     })

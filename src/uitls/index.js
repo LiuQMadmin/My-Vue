@@ -16,3 +16,15 @@ export function def(data, key, value) {
     value
   })
 }
+/**
+ * 判断是不是元素节点,node.nodeType === 1 的时候就是元素节点
+ */
+export function isElementNode(node) {
+  return node.nodeType === 1;
+}
+/**
+ * 判断是不是指令
+ */
+export function isDirective(attrName) {
+  return attrName.startsWith("v-");
+}
