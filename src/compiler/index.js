@@ -37,9 +37,6 @@ function compileElement(node) {
       const [, dirctive] = name.split("-"); //text html model on:click
       const [dirName, eventName] = dirctive.split(":");
       compileUtil[dirName](this, node, value, eventName);
-      node.addEventListener("input", (e) => {
-        console.log("12121212");
-      })
       // 删除标签v-
       node.removeAttribute("v-" + dirctive);
     }

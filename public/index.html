@@ -26,12 +26,15 @@
             name: "lqm",
             age: 23,
             className: "helloworld",
+            arr: [1],
           };
         },
       });
       function aa() {
-        vm.$data.className = "hello";
-        console.log(vm.$data);
+        console.log(vm, "vm");
+        console.log(vm.name, "name");
+        // debugger;
+        vm.arr.push(2);
       }
     </script>
   </body>
