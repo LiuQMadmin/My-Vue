@@ -6,7 +6,7 @@ class Observe {
     // Object.defineProperty(value, "__ob__", {
     //   enumerable: false, // 不可枚举
     //   configurable: false, // 不可修改
-    //   value: this //  赋值
+    //   value: this //  赋值到那个变量里面
     // })
     def(value, "__ob__", this);
     // vue如果数据测层次过多，需要递归去解析对象中的属性，一次增加set和get方法

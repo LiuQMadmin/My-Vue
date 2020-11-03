@@ -1,4 +1,4 @@
-import { isElementNode, isDirective } from "../uitls/index";
+import { isElementNode, isDirective, isEventName } from "../uitls/index";
 export function node2Fragment(el) {
   // 创建文档碎片
   const f = document.createDocumentFragment();
@@ -21,6 +21,7 @@ export function compile(vm, fragment) {
       compileElement.call(vm, child);
     } else {
       // 文本节点
+      compileText.call(vm, child);
     }
     if (child.childNodes && child.childNodes.length) {
       compile(vm, child);
@@ -38,14 +39,24 @@ function compileElement(node) {
       const [dirName, eventName] = dirctive.split(":");
       compileUtil[dirName](this, node, value, eventName);
       node.addEventListener("input", (e) => {
-        console.log("12121212");
+        // console.log("12121212");
       })
       // 删除标签v-
       node.removeAttribute("v-" + dirctive);
+    } else if (isEventName(name)) {
+      let [, eventName] = name.split("@");
+      compileUtil["on"](this, node, value, eventName);
     }
   })
 }
-
+// 文本节点编译
+function compileText(node) {
+  const content = node.textContent;
+  if (/\{\{(.+?)\}\}/.test(content)) {
+    console.log(content);
+    compileUtil['text'](this, node, content);
+  }
+}
 const compileUtil = {
   // 获取$data里面的数据
   getVal(expr, vm) {
@@ -54,9 +65,43 @@ const compileUtil = {
     }, vm.$data)
   },
   bind(vm, node, expr, className) {
-    console.log(node, "nodexxx")
     const value = this.getVal(expr, vm);
     node[className + "List"].add(value); // node.classList.add()为该元素添加class属性
+  },
+  text(vm, node, expr) {
+    let value;
+    if (expr.indexOf("{{") != -1) {
+      value = expr.replace(/\{\{(.+?)\}\}/g, (...args) => {
+        return this.getVal(args[1], vm);
+      })
+    } else {
+      value = this.getVal(expr, vm);
+    }
+    this.updater.textUpdater(node, value);
+  },
+  html(vm, node, expr) {
+    const value = this.getVal(expr, vm);
+    this.updater.htmlUpdater(node, value);
+  },
+  model(vm, node, expr) {
+    const value = this.getVal(expr, vm);
+    this.updater.modelUpdater(node, expr);
+  },
+  on(vm, node, expr, eventName) {
+    console.log(expr, eventName, vm)
+    let fn = vm.$options.methods && vm.$options.methods[expr];
+    node.addEventListener(eventName, fn.bind(vm), false);
+  },
+  updater: {
+    htmlUpdater(node, value) {
+      node.innerHTML = value;
+    },
+    modelUpdater(node, value) {
+      node.value = value;
+    },
+    textUpdater(node, value) {
+      node.textContent = value;
+    }
   }
 }
 

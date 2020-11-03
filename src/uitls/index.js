@@ -28,3 +28,10 @@ export function isElementNode(node) {
 export function isDirective(attrName) {
   return attrName.startsWith("v-");
 }
+
+/**
+ * 判断是不是事件@
+ */
+export function isEventName(attrName) {
+  return attrName.startsWith("@");
+}

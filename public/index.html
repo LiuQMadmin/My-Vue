@@ -13,9 +13,11 @@
   <body>
     <div id="app">
       <p v-bind:class="className">{{name}}</p>
-      <p></p>
-      <span>{{age}}</span>
-      <button onClick="aa()"></button>
+      <p v-text="age"></p>
+      <span>{{age}}</span><br />
+      <input v-model="model" /><br />
+      <button v-on:click="aa">change:v-on</button>
+      <button @click="aa">change@</button>
     </div>
     <script src="/dist/umd/vue.js"></script>
     <script>
@@ -26,13 +28,16 @@
             name: "lqm",
             age: 23,
             className: "helloworld",
+            model: "model"
           };
         },
+        methods: {
+          aa() {
+            console.log(123456);
+            vm.$data.name = "hello";
+          }
+        }
       });
-      function aa() {
-        vm.$data.className = "hello";
-        console.log(vm.$data);
-      }
     </script>
   </body>
 </html>

@@ -17,7 +17,7 @@ export default {
       serve({
         open: true,
         openPage: "/public/index.html", // 打开那个文件
-        port: 8080,
+        port: 8090,
         contentBase: ""
       }) : null
   ]

@@ -5,6 +5,6 @@ function Vue(options) {
   this._init(options);
 }
 
-// 通过引入文件的方式 给vue原型上面添加方法
+// 通过引入文件的方式 给vue原型上面添加方法,也算是一种全局混入的写法
 initMixin(Vue);
 export default Vue;
