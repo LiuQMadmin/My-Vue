@@ -6,37 +6,37 @@ let oldArrayMethods = Array.prototype;
 export const arrayMethods = Object.create(oldArrayMethods); // 相当于继承
 
 const methods = [
-    'push',
-    'shift',
-    'unshift',
-    'pop',
-    'reverse',
-    'sort',
-    'splice'
+  'push',
+  'shift',
+  'unshift',
+  'pop',
+  'reverse',
+  'sort',
+  'splice'
 ];
 
 // 重写原有的方法
 
 methods.forEach(method => {
-    arrayMethods[method] = function (...args) {
-        // this => 相当于value调用的
-        const result = oldArrayMethods[method].apply(this, args); // 调用原生的数组方法（切片编程）
-        let inserted; // 当前用户插入的元素
-        let ob = this.__ob__; // 因为是value再调用，所以可以直接this__ob__
-        switch (method) {
-            case 'push':
-            case 'unshift':
-                inserted = args; break;
-            case 'splice': // 3个参数， splice有删除，新增， arr.splice(0, 1, { name: 1 })
-                inserted = args.slice(2); break;
-            default: break;
-        }
-        if (inserted) {
-            // inserted ------> [.....]都会是数组
-            // 判断添加的数据是不是数组，如果是继续添加监听数据
-            ob.observeArray(inserted);
-        };
-        // return 没有用
-        return result;
+  arrayMethods[method] = function (...args) {
+    // this => 相当于value调用的
+    const result = oldArrayMethods[method].apply(this, args); // 调用原生的数组方法（切片编程）
+    let inserted; // 当前用户插入的元素
+    let ob = this.__ob__; // 因为是value再调用，所以可以直接this__ob__
+    switch (method) {
+      case 'push':
+      case 'unshift':
+        inserted = args; break;
+      case 'splice': // 3个参数， splice有删除，新增， arr.splice(0, 1, { name: 1 })
+        inserted = args.slice(2); break;
+      default: break;
     }
+    if (inserted) { // inserted肯定是个数组
+      // inserted ------> [.....]都会是数组
+      // 判断添加的数据是不是数组，如果是继续添加监听数据
+      ob.observeArray(inserted);
+    };
+    // return 没有用
+    return result;
+  }
 })

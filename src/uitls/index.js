@@ -35,3 +35,17 @@ export function isDirective(attrName) {
 export function isEventName(attrName) {
   return attrName.startsWith("@");
 }
+/**
+ * 数据proxy代理
+ */
+export function ProxyData(vm, target, key) {
+  Object.defineProperty(vm, key, {
+    get() {
+      return vm[target][key];
+    },
+    set(newValue, value) {
+      if (Object.is(newValue, value)) return;
+      vm[target][key] = newValue;
+    }
+  })
+}

@@ -30,7 +30,7 @@ class Observe {
   //监控数组里面的每一项
   observeArray(data) {
     data.forEach((item) => {
-      observe(item);
+      observe(item); // 数组中的每一个元素或者push的元素进行监听
     })
   };
 }
@@ -38,7 +38,7 @@ class Observe {
 function defineReactive(data, key, value) { // 相当于一个闭包函数，把value保存到当前函数中
   observe(value); // 如果key对应的是对象的话，进行递归遍历收集依赖
   Object.defineProperty(data, key, { // 依赖收集
-    configurable: true, //是否可变化
+    configurable: true, // 是否可变化
     enumerable: true, // 是否可枚举
     get() {
       return value;
