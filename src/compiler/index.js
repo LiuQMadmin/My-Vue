@@ -1,4 +1,5 @@
 import { isElementNode, isDirective, isEventName } from "../uitls/index";
+import { Watcher } from "../uitls/index";
 export function node2Fragment(el) {
   // 创建文档碎片
   const f = document.createDocumentFragment();
@@ -53,11 +54,10 @@ function compileElement(node) {
 function compileText(node) {
   const content = node.textContent;
   if (/\{\{(.+?)\}\}/.test(content)) {
-    console.log(content);
     compileUtil['text'](this, node, content);
   }
 }
-const compileUtil = {
+export const compileUtil = {
   // 获取$data里面的数据
   getVal(expr, vm) {
     return expr.split(".").reduce((data, currentVal) => {
@@ -66,7 +66,8 @@ const compileUtil = {
   },
   bind(vm, node, expr, className) {
     const value = this.getVal(expr, vm);
-    node[className + "List"].add(value); // node.classList.add()为该元素添加class属性
+    // node.classList.add()为该元素添加class属性
+    node[className + "List"].add(value);
   },
   text(vm, node, expr) {
     let value;
@@ -81,14 +82,22 @@ const compileUtil = {
   },
   html(vm, node, expr) {
     const value = this.getVal(expr, vm);
+    // 数据动态响应的时候添加的Watcher
+    new Watcher(vm, expr, (newVal) => {
+      this.updater.htmlUpdater(node, newVal);
+    })
     this.updater.htmlUpdater(node, value);
   },
   model(vm, node, expr) {
     const value = this.getVal(expr, vm);
-    this.updater.modelUpdater(node, expr);
+    // 数据动态响应的时候添加的Watcher
+    new Watcher(vm, expr, (newVal) => {
+      console.log(newVal);
+      this.updater.modelUpdater(node, newVal);
+    })
+    this.updater.modelUpdater(node, value);
   },
   on(vm, node, expr, eventName) {
-    console.log(expr, eventName, vm)
     let fn = vm.$options.methods && vm.$options.methods[expr];
     node.addEventListener(eventName, fn.bind(vm), false);
   },

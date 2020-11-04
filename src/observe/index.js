@@ -1,4 +1,4 @@
-import { isObject, def } from "../uitls/index";
+import { isObject, def, dep } from "../uitls/index";
 import { arrayMethods } from "./array.js";
 
 class Observe {
@@ -36,17 +36,26 @@ class Observe {
 }
 // 数据动态响应
 function defineReactive(data, key, value) { // 相当于一个闭包函数，把value保存到当前函数中
-  observe(value); // 如果key对应的是对象的话，进行递归遍历收集依赖
-  Object.defineProperty(data, key, { // 依赖收集
-    configurable: true, // 是否可变化
+  let Dep = new dep();
+  // 如果key对应的是对象的话，进行递归遍历收集依赖
+  observe(value);
+  Object.defineProperty(data, key, {
+    configurable: true, // 是否可遍历
     enumerable: true, // 是否可枚举
     get() {
+      // 依赖收集,订阅数据变化，往Dep中添加观察者
+      dep.target && Dep.addSub(dep.target);
       return value;
     },
-    set(newValue) {
-      if (Object.is(newValue, value)) return; // 如果和原来的值相等
-      observe(newValue); // 如果用户设置的值是一个对象，那就继续去劫持数据
-      value = newValue; // 如果不相等，那就直接赋值
+    set: (newValue) => {
+      // 如果和原来的值相等
+      if (Object.is(newValue, value)) return;
+      // 如果用户设置的值是一个对象，那就继续去劫持数据
+      observe(newValue);
+      // 如果不相等，那就直接赋值
+      value = newValue;
+      // 通知Dep发生变化
+      Dep.notify();
     }
   });
 }
