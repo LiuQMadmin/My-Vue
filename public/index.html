@@ -11,36 +11,42 @@
     </style>
   </head>
   <body>
-    <div id="app">
-      <p v-bind:class="className">{{name}} ----> {{name}}</p>
+    <!-- <div id="app">
+      <p v-bind:class="className">{{name}} || {{name}}</p>
       <div v-html="html"></div>
       <p v-text="age"></p>
       <span>{{age}}</span><br />
       <input v-model="flag" /><br />
       <button v-on:click="aa">change:v-on</button>
       <button @click="aa">change@</button>
+      <div>{{ arr[1] }}</div>
+    </div> -->
+    <div id="app" style="color: red; font-size: 20px">
+      你好，{{ name }}
+      <span style="color: blue">{{ age }} </span>
+      <p style="color: blue">{{ age }}</p>
     </div>
     <script src="/dist/umd/vue.js"></script>
     <script>
-      let vm = new Vue({
-        el: "#app",
-        data() {
-          return {
-            name: "lqm",
-            age: 23,
-            className: "helloworld",
-            flag: "model",
-            html: "<p1>hello</p1>",
-            person: { b: 2 }
-          };
-        },
-        methods: {
-          aa() {
-            console.log(123456);
-            vm.$data.html = "<p1>world</p1>";
-          }
-        }
-      });
+      // let vm = new Vue({
+      //   el: "#app",
+      //   data() {
+      //     return {
+      //       name: "lqm",
+      //       age: 23,
+      //       className: "helloworld",
+      //       flag: "model",
+      //       html: "<p1>hello</p1>",
+      //       person: { b: 2 }
+      //     };
+      //   },
+      //   methods: {
+      //     aa() {
+      //       console.log(123456);
+      //       vm.$data.html = "<p1>world</p1>";
+      //     }
+      //   }
+      // });
     </script>
   </body>
 </html>

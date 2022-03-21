@@ -1,10 +1,10 @@
-import { compileUtil } from "../compiler/index";
+import { compileUtil } from '../compiler/index'
 /**
  * true=>是对象 false=>不是对象
- * @param {*} data 
+ * @param {*} data
  */
 export function isObject(data) {
-  return typeof data === 'object' && data !== null;
+  return typeof data === 'object' && data !== null
 }
 
 /**
@@ -14,27 +14,28 @@ export function def(data, key, value) {
   Object.defineProperty(data, key, {
     enumerable: false,
     configurable: false,
-    value
-  });
+    value,
+  })
 }
 /**
  * 收集依赖
  */
 export class dep {
   constructor() {
-    this.subs = [];
+    this.subs = []
   }
-  // 手机观察者的函数
+  // 手机观察者的函数（new dep()之后就可以使用这个函数）
   addSub(watcher) {
-    this.subs.push(watcher);
+    this.subs.push(watcher)
   }
-  // 通知观察者去更新
+  // 通知观察者去更新（new dep()之后就可以使用这个函数）
   notify() {
-    console.log(this.subs);
-    this.subs.forEach((fn) => {
-      console.log(fn);
-      fn.update();
-    });
+    console.log(this.subs)
+    // 此时this.subs里面存的就是创建的观察者函数
+    this.subs.forEach((watcher) => {
+      console.log(watcher)
+      watcher.update()
+    })
   }
 }
 /**
@@ -42,23 +43,24 @@ export class dep {
  */
 export class Watcher {
   constructor(vm, expr, cb) {
-    this.vm = vm;
-    this.expr = expr;
-    this.cb = cb;
+    this.vm = vm
+    this.expr = expr
+    this.cb = cb
     // 先把旧值保存起来
-    this.oldValue = this.getOldValue();
+    this.oldValue = this.getOldValue()
   }
   getOldValue() {
-    dep.target = this;
-    let oldVlaue = compileUtil.getVal(this.expr, this.vm);
-    dep.target = null;
-    return oldVlaue;
+    // 给target赋值，保存当前的Watch对象
+    dep.target = this
+    let oldVlaue = compileUtil.getVal(this.expr, this.vm)
+    dep.target = null
+    return oldVlaue
   }
   // 更新新值
   update() {
-    const newVal = compileUtil.getVal(this.expr, this.vm);
+    const newVal = compileUtil.getVal(this.expr, this.vm)
     if (!Object.is(this.oldValue, newVal)) {
-      this.cb(newVal);
+      this.cb(newVal)
     }
   }
 }
@@ -66,20 +68,20 @@ export class Watcher {
  * 判断是不是元素节点,node.nodeType === 1 的时候就是元素节点
  */
 export function isElementNode(node) {
-  return node.nodeType === 1;
+  return node.nodeType === 1
 }
 /**
  * 判断是不是指令
  */
 export function isDirective(attrName) {
-  return attrName.startsWith("v-");
+  return attrName.startsWith('v-')
 }
 
 /**
  * 判断是不是事件@
  */
 export function isEventName(attrName) {
-  return attrName.startsWith("@");
+  return attrName.startsWith('@')
 }
 /**
  * 数据proxy代理
@@ -87,11 +89,11 @@ export function isEventName(attrName) {
 export function ProxyData(vm, target, key) {
   Object.defineProperty(vm, key, {
     get() {
-      return vm[target][key];
+      return vm[target][key]
     },
     set(newValue, value) {
-      if (Object.is(newValue, value)) return;
-      vm[target][key] = newValue;
-    }
+      if (Object.is(newValue, value)) return
+      vm[target][key] = newValue
+    },
   })
 }
