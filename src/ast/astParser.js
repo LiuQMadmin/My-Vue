@@ -46,13 +46,12 @@ const parseHTMLtoAST = function (html) {
   let stack = []
   while (html) {
     let textEnd = html.indexOf('<')
-
     if (textEnd === 0) {
       const startTagMatch = parseSatrtTag()
       // 完成一个元素的遍历例如：<div id="app"> 一个元素的前半部分
       if (startTagMatch) {
         start(startTagMatch.tagName, startTagMatch.attrs)
-        continue // 结束本次循环
+        continue // 结束本次循环，就因为continue了，才会把所有的<div>标签遍历完
       }
       const endTagMatch = html.match(endTag)
       if (endTagMatch) {
@@ -61,7 +60,7 @@ const parseHTMLtoAST = function (html) {
         continue
       }
     }
-    // 匹配文本节点
+    // 匹配文本节点，这时候 < 不在0的位置上面
     if (textEnd > 0) {
       text = html.substring(0, textEnd)
     }
@@ -74,14 +73,23 @@ const parseHTMLtoAST = function (html) {
   function parseSatrtTag() {
     let end
     let attr
+    // 通过正则匹配出来元素开始标签<div
     const start = html.match(startTagOpen)
+    // 0: "<div"
+    // 1: "div"
+    // groups: undefined
+    // index: 0
+    // input: "<div id=\"app\" style=\"color: red; font-size: 20px\">\n      你好，{{ name }}\n      <span style=\"color: blue\">{{ age }} </span>\n      <p style=\"color: blue\">{{ age }}</p>\n    </div>"
+    // length: 2
     if (start) {
       const match = {
         tagName: start[1],
         attrs: [],
       }
+      // 去掉匹配出来的字符串长度，继续往下匹配
       advance(start[0].length)
-      // 看看有没有属性，后面直接能匹配到 > 就是表示没有属性值，反之则表示有属性值
+      // html.match(startTagClose) 匹配元素的闭合标签 >
+      // html.match(attribute)看看有没有属性，后面直接能匹配到 > 就是表示没有属性值，反之则表示有属性值
       while (
         !(end = html.match(startTagClose)) &&
         (attr = html.match(attribute))
@@ -91,14 +99,12 @@ const parseHTMLtoAST = function (html) {
           // 'app' --> attr[3]  "app"--> attr[4]  app --> attr[5]
           value: attr[3] || attr[4] || attr[5],
         })
+        // 去掉已经匹配出来字符串长度
         advance(attr[0].length)
-        // return match
       }
       // 没有属性，后面就是结束标签, 把这个元素的ast返回
       if (end) {
-        // console.log(end, 'end')
         advance(end[0].length)
-
         // 在最后匹配到就返回这个节点tagName和attrs
         return match
       }
@@ -119,7 +125,7 @@ const parseHTMLtoAST = function (html) {
     // 把当前元素放入到栈里面
     stack.push(element)
   }
-  function end(tagName) {
+  function end() {
     /**
      * 遇到结束符标签的时候
      * 删除掉栈里面的最后一个元素
@@ -137,7 +143,7 @@ const parseHTMLtoAST = function (html) {
     text = text.trim()
     if (text.length > 0) {
       currentParent.children.push({
-        type: 1,
+        type: 3,
         text,
       })
     }
@@ -151,7 +157,6 @@ const parseHTMLtoAST = function (html) {
       parent,
     }
   }
-  console.log(root)
   return root
 }
 
