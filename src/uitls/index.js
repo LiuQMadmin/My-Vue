@@ -24,16 +24,14 @@ export class dep {
   constructor() {
     this.subs = []
   }
-  // 手机观察者的函数（new dep()之后就可以使用这个函数）
+  // 收集观察者的函数（new dep()之后就可以使用这个函数）
   addSub(watcher) {
     this.subs.push(watcher)
   }
   // 通知观察者去更新（new dep()之后就可以使用这个函数）
   notify() {
-    console.log(this.subs)
     // 此时this.subs里面存的就是创建的观察者函数
     this.subs.forEach((watcher) => {
-      console.log(watcher)
       watcher.update()
     })
   }
@@ -41,27 +39,45 @@ export class dep {
 /**
  * 创建观察者函数
  */
+// export class Watcher {
+//   constructor(vm, expr, cb) {
+//     this.vm = vm
+//     this.expr = expr
+//     this.cb = cb
+//     // 先把旧值保存起来
+//     this.oldValue = this.getOldValue()
+//   }
+//   getOldValue() {
+//     // 给target赋值，保存当前的Watch对象
+//     dep.target = this
+//     let oldVlaue = compileUtil.getVal(this.expr, this.vm)
+//     dep.target = null
+//     return oldVlaue
+//   }
+//   // 更新新值
+//   update() {
+//     const newVal = compileUtil.getVal(this.expr, this.vm)
+//     if (!Object.is(this.oldValue, newVal)) {
+//       this.cb(newVal)
+//     }
+//   }
+// }
 export class Watcher {
-  constructor(vm, expr, cb) {
+  constructor(vm, exprFun) {
     this.vm = vm
-    this.expr = expr
-    this.cb = cb
-    // 先把旧值保存起来
-    this.oldValue = this.getOldValue()
+    this.exprFun = exprFun
+    // 触发收集依赖
+    this.get()
   }
-  getOldValue() {
-    // 给target赋值，保存当前的Watch对象
+  get() {
+    // 给target赋值，保存当前的Watch对象,并且把全局的Watcher存入进去
     dep.target = this
-    let oldVlaue = compileUtil.getVal(this.expr, this.vm)
+    this.exprFun(this.vm)
     dep.target = null
-    return oldVlaue
   }
   // 更新新值
   update() {
-    const newVal = compileUtil.getVal(this.expr, this.vm)
-    if (!Object.is(this.oldValue, newVal)) {
-      this.cb(newVal)
-    }
+    this.exprFun(this.vm)
   }
 }
 /**

@@ -1,4 +1,5 @@
-function patch(oldNode, vNode) {
+function patch(vm, vNode) {
+  const oldNode = vm.$el
   let el = createElement(vNode)
   // 找到就节点的父节点
   let parentElement = oldNode.parentNode
@@ -6,6 +7,8 @@ function patch(oldNode, vNode) {
   parentElement.insertBefore(el, oldNode.nextSibling)
   // 从父节点把oldNode移除掉
   parentElement.removeChild(oldNode)
+  // 把新节点放到$el上面
+  vm.$el = el
 }
 // 把虚拟节点变成真实节点
 function createElement(vnode) {

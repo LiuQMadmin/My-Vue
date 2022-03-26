@@ -1,9 +1,7 @@
 import babel from 'rollup-plugin-babel'
 import serve from 'rollup-plugin-serve'
-// import vue from 'rollup-plugin-vue'
-// import commonjs from '@rollup/plugin-commonjs'
 export default {
-  input: './src/main.js', // 打包入口
+  input: './src/index.js', // 打包入口
   output: {
     file: 'dist/umd/vue.js', // 出口
     name: 'Vue', // 指定一个打包后全局变量的名字

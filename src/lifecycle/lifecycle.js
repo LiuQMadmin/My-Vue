@@ -14,7 +14,7 @@ function lifecycleMixin(Vue) {
   // 更新视图
   Vue.prototype._update = function (vnode) {
     const vm = this
-    patch(vm.$el, vnode)
+    patch(vm, vnode)
   }
 }
 export { mountComponent, lifecycleMixin }

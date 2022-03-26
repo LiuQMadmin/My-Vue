@@ -121,6 +121,7 @@ const parseHTMLtoAST = function (html) {
       root = element
     }
     // 标记谁是谁的子元素，在执行end方法的时候能后取到currentParent
+    // 是给匹配到文本节点的时候标记父元素用的（chars()里面用到的）
     currentParent = element
     // 把当前元素放入到栈里面
     stack.push(element)
@@ -141,6 +142,7 @@ const parseHTMLtoAST = function (html) {
   }
   function chars(text) {
     text = text.trim()
+    // text存在的时候
     if (text.length > 0) {
       currentParent.children.push({
         type: 3,

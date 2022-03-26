@@ -32,6 +32,9 @@ function initData(vm) {
   observe(data) // 相应式原理
   // 把data里面的key->value代理到this上面去，通过this[key]可以直接访问到
   vm.proxy(data)
+  setTimeout(() => {
+    data.name = 'llllll'
+  }, 3000)
 }
 function initComputed(vm) {}
 function initWatch(vm) {}

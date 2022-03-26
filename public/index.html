@@ -25,28 +25,31 @@
       你好，{{ name }} 欢迎
       <span style="color: blue">{{ age }} </span>
       <p>学习源码</p>
+      <p>{{ person.b }}</p>
+      <span>{{ arr[0].a }}</span>
     </div>
     <script src="/dist/umd/vue.js"></script>
     <script>
-      // let vm = new Vue({
-      //   el: "#app",
-      //   data() {
-      //     return {
-      //       name: "lqm",
-      //       age: 23,
-      //       className: "helloworld",
-      //       flag: "model",
-      //       html: "<p1>hello</p1>",
-      //       person: { b: 2 }
-      //     };
-      //   },
-      //   methods: {
-      //     aa() {
-      //       console.log(123456);
-      //       vm.$data.html = "<p1>world</p1>";
-      //     }
-      //   }
-      // });
+      let vm = new Vue({
+        el: '#app',
+        data() {
+          return {
+            name: 'lqm',
+            age: 23,
+            className: 'helloworld',
+            flag: 'model',
+            html: '<p1>hello</p1>',
+            person: { b: 2 },
+            arr: [{ a: 1 }, { b: 2 }],
+          }
+        },
+        methods: {
+          aa() {
+            console.log(123456)
+            vm.$data.html = '<p1>world</p1>'
+          },
+        },
+      })
     </script>
   </body>
 </html>
